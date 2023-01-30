@@ -2,7 +2,9 @@ package com.cloudshop.profilebs.service;
 
 import com.cloudshop.exceptionhandler.exceptions.EmailAlreadyExistsException;
 import com.cloudshop.exceptionhandler.exceptions.UserNotFoundException;
+import com.cloudshop.profilebs.model.Address;
 import com.cloudshop.profilebs.model.Profile;
+import com.cloudshop.profilebs.repository.AddressRepository;
 import com.cloudshop.profilebs.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public void createProfile(Profile profile) {
@@ -33,7 +38,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile getProfileById(int id) {
         Optional<Profile> optional = profileRepository.findById(id);
-        if(optional.isPresent()) {
+        if (optional.isPresent()) {
             return optional.get();
         } else {
             throw new UserNotFoundException("User does not exist");
@@ -43,7 +48,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile getProfileByUsername(String username) {
         Optional<Profile> optional = profileRepository.findByUsername(username);
-        if(optional.isPresent()) {
+        if (optional.isPresent()) {
             return optional.get();
         } else {
             throw new UserNotFoundException("User does not exist");
@@ -53,7 +58,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile getProfileByEmail(String email) {
         Optional<Profile> optional = profileRepository.findByEmail(email);
-        if(optional.isPresent()) {
+        if (optional.isPresent()) {
             return optional.get();
         } else {
             throw new UserNotFoundException("User does not exist");
@@ -62,7 +67,16 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile updateProfileById(int id, Profile profile) {
-        if(profileRepository.existsById(id)) {
+
+        Optional<Profile> optionalProfile = profileRepository.findById(id);
+
+        if (optionalProfile.isPresent()) {
+            Profile existingProfile = optionalProfile.get();
+
+            for (Address address : existingProfile.getAddresses()) {
+                addressRepository.deleteById(address.getId());
+            }
+
             Profile newProfile = Profile.builder()
                     .id(id)
                     .firstName(profile.getFirstName())
@@ -76,15 +90,16 @@ public class ProfileServiceImpl implements ProfileService {
                     .build();
 
             profileRepository.save(newProfile);
-            return newProfile;
+            return profileRepository.findById(id).get();
+
         } else {
-            throw new UserNotFoundException("User does not exist");
+            throw new UserNotFoundException("User does not exist.");
         }
     }
 
     @Override
     public void deleteProfileById(int id) {
-        if(profileRepository.existsById(id)) {
+        if (profileRepository.existsById(id)) {
             profileRepository.deleteById(id);
         } else {
             throw new UserNotFoundException("User does not exist");

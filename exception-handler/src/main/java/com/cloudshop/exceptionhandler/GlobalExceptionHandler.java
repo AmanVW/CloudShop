@@ -38,13 +38,19 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(RoleNotFoundException.class)
 	public ResponseEntity<Parent> roleNotFoundException(Exception exception, WebRequest webRequest) {
 		Parent parent = prepareErrorResponse(exception.getLocalizedMessage(), 400);
-		return new ResponseEntity<>(parent, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(parent, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<Parent> userNotFoundException(Exception exception, WebRequest webRequest) {
 		Parent parent = prepareErrorResponse(exception.getLocalizedMessage(), 400);
-		return new ResponseEntity<>(parent, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(parent, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(UnauthorizedAccessException.class)
+	public ResponseEntity<Parent> unauthorizedAccessException(Exception exception, WebRequest webRequest) {
+		Parent parent = prepareErrorResponse(exception.getLocalizedMessage(), 400);
+		return new ResponseEntity<>(parent, HttpStatus.UNAUTHORIZED);
 	}
 	
 	private Parent prepareErrorResponse(String message, int errorCode) {

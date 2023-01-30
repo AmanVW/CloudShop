@@ -1,6 +1,6 @@
 package com.cloudshop.profilebs.controller;
 
-//import com.cloudshop.exceptionhandler.exceptions.UserNotFoundException;
+import com.cloudshop.exceptionhandler.exceptions.UnauthorizedAccessException;
 import com.cloudshop.profilebs.model.Profile;
 import com.cloudshop.profilebs.service.ProfileService;
 import jakarta.validation.Valid;
@@ -12,28 +12,36 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+import static com.cloudshop.profilebs.constants.ProfileBsConstants.*;
+
 @RestController
-@RequestMapping("/profile-bs/api/v1")
+@RequestMapping(PROFILE_BASEPATH)
 public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
 
     // create
-    @PostMapping("/profile")
+    @PostMapping(PROFILE_PATH)
     public void createProfile(@RequestBody @Valid Profile profile) {
+
         profileService.createProfile(profile);
     }
 
     // list all
-    @GetMapping("/profiles")
+    @GetMapping(PROFILES_PATH)
     public ResponseEntity<List<Profile>> getAllProfiles() {
+
+//        System.out.println("HERE");
+//        if(SecurityContextHolder.getContext().getAuthentication() != null) {
+//            System.out.println("AUTHENTICATED");
+//        }
 
         return new ResponseEntity<>(profileService.getAllProfiles(), HttpStatus.OK);
     }
 
     // get by id
-    @GetMapping("/profiles/{id}")
+    @GetMapping(PROFILES_PATH + ID_PATH)
     public ResponseEntity<Profile> getProfileById(@PathVariable(name = "id") String id) {
 //        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
 //        if(userDetails.getId() != Long.parseLong(id)) {
@@ -43,7 +51,7 @@ public class ProfileController {
     }
 
     // get by username
-    @GetMapping("/profiles/{username}")
+    @GetMapping(PROFILES_PATH + USERNAME_PATH)
     public ResponseEntity<Profile> getProfileByUsername(@PathVariable(name = "username") String username) {
 //        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
 //        if(!userDetails.getUsername().equalsIgnoreCase(username)) {
@@ -53,7 +61,7 @@ public class ProfileController {
     }
 
     // get by email
-    @GetMapping("/profiles/{email}")
+    @GetMapping(PROFILES_PATH + EMAIL_PATH)
     public ResponseEntity<Profile> getProfileByEmail(@PathVariable(name = "email") String email) {
 //        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
 //        if(!userDetails.getEmail().equalsIgnoreCase(email)) {
@@ -63,7 +71,7 @@ public class ProfileController {
     }
 
     // update by id
-    @PutMapping("/profiles/{id}")
+    @PutMapping(PROFILES_PATH + ID_PATH)
     public ResponseEntity<Profile> updateProfileById(@PathVariable(name = "id") String id,
                                                      @RequestBody Profile profile) {
 //        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
@@ -74,7 +82,7 @@ public class ProfileController {
     }
 
     // delete
-    @DeleteMapping("/profiles/{id}")
+    @DeleteMapping(PROFILES_PATH + ID_PATH)
     public void deleteProfileById(@PathVariable(name = "id") String id) {
 //        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
 //        if(userDetails.getId() != Long.parseLong(id)) {

@@ -1,5 +1,6 @@
 package com.cloudshop.profilebs.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Profile {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "profile_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_seq")
     private int id;
 
     @NotBlank
@@ -38,7 +41,8 @@ public class Profile {
     private String phone;
 
     @PastOrPresent
-    @NotBlank
+//    @NotBlank
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
 
     @Pattern(regexp = "MALE|FEMALE|OTHER", flags = Pattern.Flag.CASE_INSENSITIVE)
