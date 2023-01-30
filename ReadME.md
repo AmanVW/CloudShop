@@ -1,4 +1,7 @@
 # CLOUD-SHOP
+Architecture:
+
+![Architecture](arch.PNG)
 
 The modules in this project are listed below:
 
