@@ -8,7 +8,7 @@
             <fileNamePattern>${LOG_PATH}/api-gateway-%d{ddMMyy}.log </fileNamePattern>
         </rollingPolicy>
     </appender>
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CustomLogAppender" />
     </root>
 </configuration>

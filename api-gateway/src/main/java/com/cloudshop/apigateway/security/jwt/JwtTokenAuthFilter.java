@@ -1,5 +1,6 @@
 package com.cloudshop.apigateway.security.jwt;
 
+import com.cloudshop.exceptionhandler.exceptions.TokenNotProvidedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -11,8 +12,6 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.util.logging.Filter;
-
 @RequiredArgsConstructor
 public class JwtTokenAuthFilter implements WebFilter {
 
@@ -22,8 +21,10 @@ public class JwtTokenAuthFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+
         String token = resolveToken(exchange.getRequest());
         if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
+
             Authentication authentication = this.tokenProvider.getAuthentication(token);
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
@@ -34,6 +35,7 @@ public class JwtTokenAuthFilter implements WebFilter {
     private String resolveToken(ServerHttpRequest request) {
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
+
             return bearerToken.substring(7);
         }
         return null;

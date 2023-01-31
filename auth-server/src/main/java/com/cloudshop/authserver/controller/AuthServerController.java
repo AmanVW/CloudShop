@@ -10,6 +10,7 @@ import com.cloudshop.authserver.model.payload.response.JwtResponse;
 import com.cloudshop.authserver.repository.RoleRepository;
 import com.cloudshop.authserver.repository.UserRepository;
 import com.cloudshop.authserver.service.UserDetailsImpl;
+import com.cloudshop.exceptionhandler.exceptions.BadCredentialsCustomException;
 import com.cloudshop.exceptionhandler.exceptions.UsernameAlreadyExistsException;
 import com.cloudshop.exceptionhandler.exceptions.RoleNotFoundException;
 import jakarta.validation.Valid;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -100,7 +103,12 @@ public class AuthServerController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
+            throw new BadCredentialsCustomException("Username or password is incorrect");
+        }
         
         SecurityContextHolder.getContext().setAuthentication(authentication);
         

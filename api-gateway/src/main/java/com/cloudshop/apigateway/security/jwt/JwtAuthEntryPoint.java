@@ -45,7 +45,6 @@ public class JwtAuthEntryPoint implements ServerAuthenticationEntryPoint {
         return Mono.fromRunnable(() -> {
             ServerHttpResponse response = exchange.getResponse();
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
-//            response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, this.headerValue);
         });
     }
 }

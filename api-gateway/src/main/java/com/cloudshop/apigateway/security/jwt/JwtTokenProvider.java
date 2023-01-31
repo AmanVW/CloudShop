@@ -1,5 +1,6 @@
 package com.cloudshop.apigateway.security.jwt;
 
+import com.cloudshop.exceptionhandler.exceptions.UnauthorizedAccessException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -58,10 +59,9 @@ public class JwtTokenProvider {
             log.info("expiration date: {}", claims.getBody().getExpiration());
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("Invalid JWT token: {}", e.getMessage());
-            log.trace("Invalid JWT token trace.", e);
+            log.error("Provide token is invalid  or expired");
+            throw new UnauthorizedAccessException("Provide token is invalid  or expired");
         }
-        return false;
     }
 
 }
