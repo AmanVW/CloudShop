@@ -16,5 +16,6 @@ public class Child {
 	private String message;
 	private int errorCode;
 	private Date timestamp;
+	private String path;
 	private String developerEmail;
 }
