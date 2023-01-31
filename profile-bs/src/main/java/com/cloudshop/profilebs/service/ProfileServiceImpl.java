@@ -71,13 +71,10 @@ public class ProfileServiceImpl implements ProfileService {
         Optional<Profile> optionalProfile = profileRepository.findById(id);
 
         if (optionalProfile.isPresent()) {
+
             Profile existingProfile = optionalProfile.get();
 
-            for (Address address : existingProfile.getAddresses()) {
-                addressRepository.deleteById(address.getId());
-            }
-
-            Profile newProfile = Profile.builder()
+            Profile profileReq = Profile.builder()
                     .id(id)
                     .firstName(profile.getFirstName())
                     .middleName(profile.getMiddleName())
@@ -86,10 +83,24 @@ public class ProfileServiceImpl implements ProfileService {
                     .phone(profile.getPhone())
                     .dateOfBirth(profile.getDateOfBirth())
                     .gender(profile.getGender())
-                    .addresses(profile.getAddresses())
                     .build();
 
-            profileRepository.save(newProfile);
+            for (Address address : profile.getAddresses()) {
+                Address addressReq = Address.builder()
+                        .id(address.getId())
+                        .house(address.getHouse())
+                        .street(address.getStreet())
+                        .area(address.getArea())
+                        .city(address.getCity())
+                        .state(address.getState())
+                        .country(address.getCountry())
+                        .zip(address.getZip())
+                        .build();
+
+                addressRepository.save(addressReq);
+            }
+
+            profileRepository.save(profileReq);
             return profileRepository.findById(id).get();
 
         } else {

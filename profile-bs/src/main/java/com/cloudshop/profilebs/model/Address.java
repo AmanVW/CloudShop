@@ -20,25 +20,22 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_seq")
     private int id;
 
-    @NotBlank
     private String house;
 
-    @NotBlank
     private String street;
 
-    @NotBlank
     private String area;
 
-    @NotBlank
+    @NotBlank(message = "City should not be blank or empty")
     private String city;
 
-    @NotBlank
+    @NotBlank(message = "State should not be blank or empty")
     private String state;
 
-    @NotBlank
+    @NotBlank(message = "Country should not be blank or empty")
     private String country;
 
-    @NotBlank
+    @NotBlank(message = "Zip code should not be blank or empty")
     @Size(min = 6, max = 6)
     private String zip;
 
