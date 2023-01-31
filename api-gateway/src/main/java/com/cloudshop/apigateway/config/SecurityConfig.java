@@ -17,15 +17,15 @@ import static com.cloudshop.apigateway.constants.ApiGatewayConstants.*;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Autowired
-    JwtAuthEntryPoint unauthorizedHandler;
-
     @Bean
     public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http, JwtTokenProvider jwtTokenProvider) {
+
         return http.cors()
                 .and()
                 .csrf().disable()
                 .httpBasic().disable()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(unauthorizedHandler).and()
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers("/auth-server/**").permitAll()
                         .pathMatchers("/profile-bs/api/v1/profiles").hasAnyRole( ADMIN, MODERATOR)

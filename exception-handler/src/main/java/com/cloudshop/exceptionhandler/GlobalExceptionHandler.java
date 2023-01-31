@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,6 +58,17 @@ public class GlobalExceptionHandler {
 
 		return prepareError(exception.getBindingResult().getFieldErrors()
 				.stream().map(FieldError::getDefaultMessage).collect(Collectors.toList()), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(BadCredentialsCustomException.class)
+	public ResponseEntity<Parent> badCredentialsCustomException(BadCredentialsCustomException exception) {
+
+		return prepareError(Collections.singletonList(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<Parent> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+		return prepareError(Collections.singletonList(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
 	}
 
 	private ResponseEntity<Parent> prepareError(List<String> errorMessages, HttpStatus badRequest) {

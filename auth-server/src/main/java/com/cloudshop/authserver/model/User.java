@@ -19,17 +19,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
-    @Size(max = 20)
+    @NotBlank(message = "Username should not be blank or empty")
+    @Size(max = 20, message = "Username should not be longer than 20 characters")
     private String username;
 
-    @NotBlank
-    @Email
-    @Size(max = 20)
+    @NotBlank(message = "Email should not be blank or empty")
+    @Email(message = "Email should follow 'abc@def.com' pattern")
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
+    @NotBlank(message = "Password should not be blank or empty")
+    @Size(min = 8, message = "Password must be atleast 8 characters long")
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
